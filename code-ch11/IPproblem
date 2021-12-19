@@ -115,11 +115,11 @@ class VersionMessage:
 
     def __init__(self, version=70015, services=0, timestamp=None,
                  receiver_services=0,
-                 receiver_ip=b'\x00\x00\x00\x00', receiver_port=8333,
+                 receiver_ip=b"127.0.0.1", receiver_port=8333, # testnet port 183333
                  sender_services=0,
-                 sender_ip=b'\x00\x00\x00\x00', sender_port=8333,
-                 nonce=None, user_agent=b'/programmingbitcoin:0.1/',
-                 latest_block=0, relay=False):
+                 sender_ip=b"127.0.0.1", sender_port=8333, # testnet port 183333
+                 nonce=None, user_agent= 0, #not uset user_agent
+                 latest_block=714644, relay=False): # I appoint latest_block
         self.version = version
         self.services = services
         if timestamp is None:
@@ -150,20 +150,21 @@ class VersionMessage:
         result += int_to_little_endian(self.timestamp, 8)
         # receiver services is 8 bytes little endian
         result += int_to_little_endian(self.receiver_services, 8)
-        # IPV4 is 10 00 bytes and 2 ff bytes then receiver ip
-        result += b'\x00' * 10 + b'\xff\xff' + self.receiver_ip
+        # diffent part IP 
+        result += self.receiver_ip +int_to_little_endian(0,7)
         # receiver port is 2 bytes, big endian
         result += self.receiver_port.to_bytes(2, 'big')
         # sender services is 8 bytes little endian
         result += int_to_little_endian(self.sender_services, 8)
-        # IPV4 is 10 00 bytes and 2 ff bytes then sender ip
-        result += b'\x00' * 10 + b'\xff\xff' + self.sender_ip
+        # diffent part IP 
+        result += self.sender_ip +int_to_little_endian(0,7)
         # sender port is 2 bytes, big endian
         result += self.sender_port.to_bytes(2, 'big')
         # nonce should be 8 bytes
         result += self.nonce
         # useragent is a variable string, so varint first
-        result += encode_varint(len(self.user_agent))
+        not use user_agent
+        #result += encode_varint(len(self.user_agent))
         result += self.user_agent
         # latest block is 4 bytes little endian
         result += int_to_little_endian(self.latest_block, 4)
