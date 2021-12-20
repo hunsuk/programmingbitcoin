@@ -79,36 +79,35 @@ class MerkleTree:
     # end::source2[]
 
     # tag::source3[]
-    def populate_tree(self, flag_bits, hashes):
-        while self.root() is None:  # <1>
-            if self.is_leaf():  # <2>
-                flag_bits.pop(0)  # <3>
-                self.set_current_node(hashes.pop(0))  # <4>
+     def populate_tree(self, flag_bits, hashes):
+        while self.root() is None:
+            if self.is_leaf():
+                flag_bits.pop(0)
+                self.set_current_node(hashes.pop(0))
                 self.up()
             else:
                 left_hash = self.get_left_node()
-                if left_hash is None:  # <5>
-                    if flag_bits.pop(0) == 0:  # <6>
+                if left_hash is None:
+                    if flag_bits.pop(0) ==0:
                         self.set_current_node(hashes.pop(0))
                         self.up()
                     else:
-                        self.left()  # <7>
-                elif self.right_exists():  # <8>
+                        self.left()
+                elif self.right_exists():
                     right_hash = self.get_right_node()
-                    if right_hash is None:  # <9>
+                    if right_hash is None:
                         self.right()
-                    else:  # <10>
-                        self.set_current_node(merkle_parent(left_hash, 
-                        right_hash))
+                    else:
+                        self.set_current_node(merkle_parent(left_hash,right_hash))
                         self.up()
-                else:  # <11>
-                    self.set_current_node(merkle_parent(left_hash, left_hash))
+                else:
+                    self.set_current_node(merkle_parent(left_hash, right_hash))
                     self.up()
-        if len(hashes) != 0:  # <12>
-            raise RuntimeError('hashes not all consumed {}'.format(len(hashes)))
-        for flag_bit in flag_bits:  # <13>
-            if flag_bit != 0:
-                raise RuntimeError('flag bits not all consumed')
+            if len(hashes) != 0:
+                raise RuntimeError('hashes not all consumed {}'.format(len(hashes)))
+            for flag_bit in flag_bits:
+                if flag_bit != 0:
+                    raise RuntimeError('flag_bit is must empty')
     # end::source3[]
 
 
